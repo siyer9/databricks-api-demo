@@ -1,0 +1,62 @@
+{
+  "name": "Bronze_Silver_Gold_ETL_Job",
+  "git_source": {
+    "git_provider": "gitHub",
+    "git_url": "https://github.com/siyer9/databricks-api-demo",
+    "git_branch": "main"
+  },
+  "tasks": [
+    {
+      "task_key": "Bronze_Ingest",
+      "depends_on": [],
+      "sql_task": {
+        "query": {
+          "query_file": "sql_etl/ingest_bronze.sql"
+        },
+        "warehouse_id": "a69a7771e494c1cd" 
+      }
+    },
+    {
+      "task_key": "Silver_Calculate",
+      "depends_on": [
+        {
+          "task_key": "Bronze_Ingest"
+        }
+      ],
+      "sql_task": {
+        "query": {
+          "query_file": "sql_etl/calculate_silver.sql"
+        },
+        "warehouse_id": "a69a7771e494c1cd"
+      }
+    },
+    {
+      "task_key": "Gold_Aggregate",
+      "depends_on": [
+        {
+          "task_key": "Silver_Calculate"
+        }
+      ],
+      "sql_task": {
+        "query": {
+          "query_file": "sql_etl/aggregate_gold.sql"
+        },
+        "warehouse_id": "a69a7771e494c1cd"
+      }
+    }
+  ],
+  "job_clusters": [
+    {
+      "job_cluster_key": "etl_cluster",
+      "new_cluster": {
+        "spark_version": "14.3.x-scala2.12",
+        "node_type_id": "Standard_DS3_v2", 
+        "num_workers": 1,
+        "custom_tags": {
+          "purpose": "etl_job"
+        }
+      }
+    }
+  ],
+  "max_concurrent_runs": 1
+}

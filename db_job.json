@@ -1,0 +1,55 @@
+{
+  "name": "ETL Pipeline - Bronze, Silver, Gold (Free Edition)",
+  "tasks": [
+    {
+      "task_key": "bronze_ingestion",
+      "depends_on": [],
+      "spark_python_task": {
+        "python_file": "/Repos/sridhar.iyer@growtharc.com/databricks-api-demo/src/bronze_layer.py",
+        "parameters": [
+          "--input-path", "source_data/",
+          "--output-table", "bronze.raw_data"
+        ]
+      },
+      "sql_warehouse_id": "a69a7771e494c1cd" 
+    },
+    {
+      "task_key": "silver_transformation",
+      "depends_on": [
+        {
+          "task_key": "bronze_ingestion"
+        }
+      ],
+      "spark_python_task": {
+        "python_file": "/Repos/sridhar.iyer@growtharc.com/databricks-api-demo/src/silver_layer.py",
+        "parameters": [
+          "--input-table", "bronze.raw_data",
+          "--output-table", "silver.transformed_data"
+        ]
+      },
+      "sql_warehouse_id": "a69a7771e494c1cd" 
+    },
+    {
+      "task_key": "gold_aggregation",
+      "depends_on": [
+        {
+          "task_key": "silver_transformation"
+        }
+      ],
+      "spark_python_task": {
+        "python_file": "/Repos/sridhar.iyer@growtharc.com/databricks-api-demo/src/gold_layer.py",
+        "parameters": [
+          "--input-table", "silver.transformed_data",
+          "--output-table", "gold.reporting_metrics"
+        ]
+      },
+      "sql_warehouse_id": "a69a7771e494c1cd" 
+    }
+  ],
+  "job_clusters": [],
+  "git_source": {
+    "git_url": "YOUR_GIT_REPO_URL",
+    "git_provider": "gitHub",
+    "git_branch": "main"
+  }
+}
