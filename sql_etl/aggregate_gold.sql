@@ -1,0 +1,1 @@
+CREATE OR REPLACE TABLE gold_product_summary AS SELECT product_id, COUNT(*) AS total_transactions, SUM(amount_with_tax) AS total_revenue FROM silver_sales GROUP BY 1;

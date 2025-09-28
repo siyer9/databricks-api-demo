@@ -1,0 +1,1 @@
+CREATE OR REPLACE TABLE silver_sales AS SELECT transaction_id, product_id, amount * 1.05 AS amount_with_tax FROM bronze_sales;
